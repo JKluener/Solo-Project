@@ -1,0 +1,18 @@
+[REQUIRED] Name: Joseph Kluener
+[REQUIRED] Project Title: Rugby Season Organizer
+[REQUIRED] Project Stack: MERN
+[REQUIRED] GitHub Repo Link: https://github.com/JKluener/Solo-Project
+
+[REQUIRED] Project Description: A website that allows me to organize my rugby players, their season, and some game stats on a single application.
+
+[REQUIRED] New Programming Concept(s) I'm Planning to Learn: Linking MongoDb collections, acessing multiple collections at once using UseEffect.
+
+[REQUIRED] Week 1 Features (to show at Review during Week 2)
+- Ability to getAll players, games, and stats for one game.
+
+[REQUIRED] Week 2 Features (to show at first office hour/lecture of Week 3)
+- ***Finish CSS work (could be Bootstrap or another framework too instead of CSS)***
+- 
+
+[REQUIRED] Product Backlog (If I have more time after completing my MVP, I'll start to work on...)
+- My group project
