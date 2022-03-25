@@ -3,6 +3,8 @@ import axios from 'axios';
 import { navigate } from '@reach/router';
 import Navbar from './chunks/Navbar';
 import Select from 'react-select';
+import HoverButton from './chunks/HoverButton';
+import { saveAs } from 'file-saver';
 
 
 const AddPlayerForm = (props) => {
@@ -10,38 +12,21 @@ const AddPlayerForm = (props) => {
     const [name, setName] = useState("");
     const [year, setYear] = useState({});
     const [positionGroup, setPositionGroup] = useState({});
-    const [preferredPositionOne, setPreferredPositionOne] = useState({});
-    const [preferredPositionTwo, setPreferredPositionTwo] = useState({});
-    const [preferredPositionThree, setPreferredPositionThree] = useState({});
     const [preferredPositions, setPreferredPositions] = useState([]);
-    const [playerImg, setPlayerImg] = useState("");
 
     const createPlayerHandler = (e) => {
         e.preventDefault();
-        setPreferredPositions([preferredPositionOne, preferredPositionTwo, preferredPositionThree]);
-        let dataSet = {name, year, positionGroup, preferredPositions, playerImg }
+        let dataSet = {name, year, positionGroup, preferredPositions}
         axios.post('http://localhost:8000/api/players', dataSet)
             .then((res)=>{
                 console.log(res.data);
-                navigate('/');
+                navigate('/players');
             })
             .catch((err) => {
                 console.log(err);
                 setErrors(err.response.data.errors)
         });
     };
-
-    const HandlePreferredPositions = (positionFromBelow) => {
-        if (preferredPositionOne === '') {
-            setPreferredPositionOne(positionFromBelow);
-        }
-        else if (preferredPositionTwo === '') {
-            setPreferredPositionTwo(positionFromBelow);
-        }
-        else {
-            setPreferredPositionThree(positionFromBelow);
-        }
-    }
 
     const yearOptions = [
         {value: 'freshman', label: 'Freshman'},
@@ -94,16 +79,12 @@ const AddPlayerForm = (props) => {
                 <div className='uk-margin'>
                     <label>Preferred Positions:</label>
                         {positionGroup.value === 'back'?
-                            <Select options={backPositionOptions} placeholder="Select Applicable Positions" onChange={setPreferredPositions} defaultValue={preferredPositions} isMulti />
+                        <Select options={backPositionOptions} placeholder="Select Applicable Positions" onChange={setPreferredPositions} defaultValue={preferredPositions} isMulti />
                         :
                         <Select options={forwardPositionOptions} placeholder="Select Applicable Positions" onChange={setPreferredPositions} defaultValue={preferredPositions} isMulti />
                     }
                 </div>
-                <div className='uk-form-custom'>
-                    <label>Player Image:</label>
-                    <input type= 'file' onChange={(e) => setPlayerImg(e.target.value)}/>
-                </div>
-                <button type='submit' >Submit</button>
+                <HoverButton btnversion="submitPlayer"/>
             </form>
         </div>
     )

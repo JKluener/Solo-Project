@@ -8,4 +8,6 @@ module.exports = (app) =>{
     app.put('/api/players/:id', PlayerController.editPlayer);
     app.delete('/api/players/:id', PlayerController.deletePlayer);
     app.get('/api/players/:id', PlayerController.getOnePlayer);
+    app.get('/api/players/:name', PlayerController.getByName);
+
 }

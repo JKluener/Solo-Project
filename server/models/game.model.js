@@ -19,7 +19,7 @@ const GameSchema = new mongoose.Schema({
     },
     roster: {
         type: Array,
-        maxLength: [23]
+        maxlength: [15, "The roster must only contain 15 players"]
     }
 
 }, {timestamps: true})

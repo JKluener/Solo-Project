@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "@reach/router";
+import { navigate } from "@reach/router";
 
 const Navbar = (props) => {
     const [players, setPlayers] = useState([]);
@@ -43,7 +44,7 @@ const Navbar = (props) => {
                                 {
                                     players?
                                     players.map((player) => (
-                                        <li className="uk-active">{player.name}</li>
+                                        <li className="uk-active" key={player._id} onClick={() => navigate(`/players/${player._id}`)}>{player.name}</li>
                                     ))
                                 :null}
                                 <li className="uk-nav-divider"></li>
@@ -58,7 +59,7 @@ const Navbar = (props) => {
                                 {
                                     games?
                                     games.map((game) => (
-                                        <li className="uk-active">{game.opponent}</li>
+                                        <li className="uk-active" key={game._id} onClick = {(e)=> navigate(`/schedule/${game._id}`)}>{game.opponent}</li>
                                     ))
                                 :null}
                             </ul>

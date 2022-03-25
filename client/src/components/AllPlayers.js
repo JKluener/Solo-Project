@@ -2,14 +2,11 @@ import {Link, navigate } from "@reach/router";
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import Navbar from "./chunks/Navbar";
+import HoverButton from "./chunks/HoverButton";
 
 const AllPlayers = (props) => {
     const [players, setPlayers] = useState([]);
-    const [hovered, setHovered] = useState(false);
-    const [hoveredSmall, setHoveredSmall] = useState(false);
-    const [btnClass, setBtnClass] = useState("uk-button uk-button-secondary uk-width-1-1");
-    const [btnClassSmall, setBtnClassSmall] = useState("uk-button uk-button-primary uk-button-small");
-    const [reloadPage, setReloadPage] = useState(false)
+    const [reloadPage, setReloadPage] = useState(false);
 
     useEffect(()=>{
         axios.get('http://localhost:8000/api/players')
@@ -23,39 +20,11 @@ const AllPlayers = (props) => {
             })
     }, [reloadPage])
 
-    const toggleHover = () => {
-        setHovered(!hovered);
-        handleBtnClass(hovered);
-    }
 
-    const toggleHoverSmall = () => {
-        setHoveredSmall(!hoveredSmall);
-        handleBtnClassSmall(hoveredSmall);
+    const removeFromDom = (playerId) => {
+        setPlayers(players.filter(player => player._id != playerId));
+        setReloadPage(true);
     }
-
-    const handleBtnClass = (hovered) => {
-        hovered?
-            setBtnClass("uk-button uk-button-secondary uk-width-1-1")
-            :setBtnClass("uk-button uk-button-default uk-width-1-1")
-    }
-
-    const handleBtnClassSmall = (hoveredSmall) => {
-        hovered?
-            setBtnClassSmall("uk-button uk-button-secondary uk-button-small")
-            :setBtnClassSmall("uk-button uk-button-primary uk-button-small")
-    }
-
-    const deleteHandler = (idFromBelow) => {
-        axios.delete(`http://localhost:8000/api/players/${idFromBelow}`)
-        .then((res) => {
-            console.log(res.data);
-            navigate('/players');
-            setReloadPage(true);
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-    };
 
     return (
         <div className="uk-container">
@@ -86,8 +55,8 @@ const AllPlayers = (props) => {
                                     ))}
                                 </td>
                                 <td>
-                                    <button style={{marginRight: '10px'}} className="uk-button uk-button-primary uk-button-small" onClick={()=>{navigate(`/players/edit/${player._id}`)}}>Edit</button>
-                                    <button className="uk-button uk-button-danger uk-button-small" onClick={(e) => deleteHandler(player._id)}>Delete</button>
+                                    <HoverButton btnversion="navigateEdit" itemId={player._id} />
+                                    <HoverButton btnversion="delete" itemId={player._id}/>
                                 </td>
                             </tr>
                         ))
@@ -96,7 +65,7 @@ const AllPlayers = (props) => {
                 </tbody>
             </table>
             <div className="uk-container-xsmall uk-align-center">
-                <button className={btnClass} onMouseEnter={() => toggleHover()} onMouseLeave={() => toggleHover()} onClick={() => {navigate(`players/add`)}} >Add Player</button>
+                <HoverButton btnversion="navigateAddPlayer" itemId=""/>
             </div>
             </div>
     )

@@ -1,5 +1,5 @@
 const Game = require('../models/game.model');
-const PlayerController = require("../controllers/player.controller");
+const Player = require("../models/player.model");
 
 
 module.exports = {
@@ -7,12 +7,12 @@ module.exports = {
         Game.create(req.body)
             .then((newGame)=>{
                 res.json(newGame);
-            })
+                console.log(req.body);
+                })
             .catch((err)=>{
                 console.log(err);
                 res.status(400).json(err);
             })
-        PlayerController.editPlayer;
     },
 
     getOneGame: (req, res)=>{

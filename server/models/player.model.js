@@ -20,9 +20,6 @@ const PlayerSchema = new mongoose.Schema({
         of: Object,
         required: [true]
     },
-    playerImg: {
-        type: Object
-    },
     gamesPlayed: {
         type: []
     }

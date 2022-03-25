@@ -2,18 +2,22 @@ import { navigate } from "@reach/router";
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import Navbar from "./chunks/Navbar";
+import HoverButton from "./chunks/HoverButton";
+import HoverDeleteGame from "./chunks/HoverDeleteGame";
 
 const GameSchedule = (props) => {
     const [errors, setErrors] = useState({});
     const [games, setGames] = useState([]);
-    const [addGameBtnClicked, setAddGameBtnClicked] = useState(false);
+    const [players, setPlayers] = useState([]);
     const [opponent, setOpponent] = useState("");
     const [homeBoolean, setHomeBoolean] = useState(true);
     const [score, setScore] = useState("");
     const [scorers, setScorers] = useState("");
     const [roster, setRoster] = useState([]);
     const [hovered, setHovered] = useState(false);
-    const [btnClass, setBtnClass] = useState("uk-button uk-button-secondary uk-width-1-1");
+    const [activeButtonClass, setActiveButtonClass] = useState("");
+    const [btnClassOne, setBtnClassOne] =useState("");
+    const [btnClassTwo, setBtnClassTwo] =useState("");
 
     useEffect(()=>{
         axios.get('http://localhost:8000/api/games')
@@ -21,7 +25,16 @@ const GameSchedule = (props) => {
                 console.log(res);
                 console.log(res.data);
                 setGames(res.data);
-                setAddGameBtnClicked(false);
+                setActiveButtonClass("uk-button uk-button-primary uk-button-small");
+                setBtnClassOne("uk-button uk-button-primary uk-button-small");
+                setBtnClassTwo("uk-button uk-button-danger uk-button-small");
+            })
+            axios.get('http://localhost:8000/api/players')
+            .then((res)=>{
+                console.log(res);
+                console.log(res.data);
+                setPlayers(res.data);
+                handleRoster();
             })
             .catch((err)=>{
                 console.log(err);
@@ -33,8 +46,7 @@ const GameSchedule = (props) => {
         axios.post('http://localhost:8000/api/games ', {opponent, homeBoolean, score, scorers, roster})
             .then((res)=>{
                 console.log(res.data);
-                navigate('/schedule/edit');
-                setAddGameBtnClicked(false);
+                navigate('/');
             })
             .catch((err) => {
                 console.log(err);
@@ -42,27 +54,24 @@ const GameSchedule = (props) => {
         });
     };
 
-    const handleRosterString = (e) => {
-        let rosterString = e.target.value;
-        setRoster([rosterString.split()])
-    };
-
-    const toggleHover = () => {
-        setHovered(!hovered);
-        handleBtnClass(hovered);
+    const handleRoster = (e) => {
+        let tempPlayerNames = [];
+        let namesString = e.target.value;
+        tempPlayerNames = namesString.split(',');
+        setRoster(tempPlayerNames);
     }
 
-    const handleBtnClass = (hovered) => {
-        hovered?
-            setBtnClass("uk-button uk-button-secondary uk-width-1-1")
-            :setBtnClass("uk-button uk-button-default uk-width-1-1")
-        
+    const handleScorers = (e) => {
+        let tempPlayerNames = [];
+        let namesString = e.target.value;
+        tempPlayerNames = namesString.split(',');
+        setScorers(tempPlayerNames);
     }
 
     return (
         <div className="uk-container">
             <Navbar/>
-            <table className="uk-table uk-table-hover uk-table-middle">
+            <table className="uk-table uk-table-hover uk-table-middle uk-table-small">
                 <thead>
                     <tr>
                     <th>Opponent</th>
@@ -70,6 +79,7 @@ const GameSchedule = (props) => {
                     <th>Score</th>
                     <th>Scorers</th>
                     <th>GameDay Roster</th>
+                    <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,41 +92,46 @@ const GameSchedule = (props) => {
                                 <td>{game.score}</td>
                                 <td>{game.scorers}</td>
                                 <td>{game.roster}</td>
+                                <HoverButton btnversion="navigateEditGame" itemId={game._id} />
+                                <HoverDeleteGame gameid={game._id}/>
                             </tr>
                         ))
                         :null
                     }
                 </tbody>
             </table>
-                {addGameBtnClicked? 
                 <div>
                     <form onSubmit={(e) => createGameHandler(e)}>
                         <fieldset className="uk-fieldset">
                             <div className="uk-margin">
+                                <label>Opponent:</label>
                                 <input className='uk-input' type='text' name = 'opponent' onChange={(e) => setOpponent(e.target.value)}/>
                             </div>
+                            {errors.opponent ? <span style={{color: "red"}}>{errors.name.message}</span> : null} 
                             <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                                <label typeof="radio" className="uk-radio"><input name="Home" value={true} onChange={(e) => setHomeBoolean(e.target.value)} defaultChecked/></label>
-                                <label typeof="radio" className="uk-radio"><input name="Away" value={false} onChange={(e) => setHomeBoolean(e.target.value)}/></label>
+                                <label>Location:</label>
+                                <label><input name="Home" className="uk-radio" type='radio' value={true} onChange={(e) => setHomeBoolean(e.target.value)} defaultChecked/>Home</label>
+                                <label><input name="Away" className="uk-radio" type='radio' value={false} onChange={(e) => setHomeBoolean(e.target.value)}/>Away</label>
                             </div>
+                            {errors.homeBoolean ? <span style={{color: "red"}}>{errors.name.message}</span> : null} 
                             <div className="uk-margin">
+                                <label>Score:</label>
                                 <input className='uk-input' type='text' name = 'score' onChange={(e) => setScore(e.target.value)}/>
                             </div>
                             <div className="uk-margin">
-                                <input className='uk-input' type='text' name = 'scorers' onChange={(e) => setScorers(e.target.value)}/>
+                                <label>Scorers:</label>
+                                <input className='uk-input' type='text' name = 'scorers' onChange={(e) => handleScorers(e)}/>
                             </div>
                             <div className="uk-margin">
-                                <input className='uk-input' type='text' name = 'roster' onChange={(e) => handleRosterString(e)}/>
+                                <label>Roster:</label>
+                                <p>*Rostered Players Must Be Typed in Order By Number</p>
+                                <input className='uk-input' type='text' name = 'roster' onChange={(e) => handleRoster(e)}/>
                             </div>
+                            {errors.roster ? <span style={{color: "red"}}>{errors.name.message}</span> : null} 
                             <button type="submit">Submit</button>
                         </fieldset>
                     </form>
                 </div>
-                :
-                    <div className="uk-container-xsmall uk-align-center">
-                            <button className={btnClass} onMouseEnter={() => toggleHover()} onMouseLeave={() => toggleHover()} onClick={setAddGameBtnClicked(true)}>Add Game</button>
-                    </div>
-                }
             </div>
     )
 }

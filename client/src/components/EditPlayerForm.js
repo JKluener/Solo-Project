@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { navigate } from '@reach/router';
 import Navbar from './chunks/Navbar';
+import HoverButton from './chunks/HoverButton';
+import Select from 'react-select';
 
 
 const EditPlayerForm = (props) => {
     const [errors, setErrors] = useState({});
     const [name, setName] = useState("");
-    const [year, setYear] = useState("");
-    const [positionGroup, setPositionGroup] = useState("");
-    const [preferredPositionOne, setPreferredPositionOne] = useState("");
-    const [preferredPositionTwo, setPreferredPositionTwo] = useState("");
-    const [preferredPositionThree, setPreferredPositionThree] = useState("");
+    const [year, setYear] = useState({});
+    const [positionGroup, setPositionGroup] = useState({});
     const [preferredPositions, setPreferredPositions] = useState([]);
     const [playerImg, setPlayerImg] = useState("");
 
@@ -24,9 +23,7 @@ const EditPlayerForm = (props) => {
                 setName(res.data.name);
                 setYear(res.data.year);
                 setPositionGroup(res.data.positionGroup);
-                setPreferredPositionOne(res.data.preferredPositions[0]);
-                setPreferredPositionTwo(res.data.preferredPositions[1]);
-                setPreferredPositionThree(res.data.preferredPositions[2])
+                setPreferredPositions(res.data.preferredPositions);
             })
             .catch((err)=>{
                 console.log(err);
@@ -34,13 +31,13 @@ const EditPlayerForm = (props) => {
     }, [])
 
 
-    const createPlayerHandler = (e) => {
+    const editPlayerHandler = (e) => {
         e.preventDefault();
-        setPreferredPositions([preferredPositionOne, preferredPositionTwo, preferredPositionThree])
-        axios.post('http://localhost:8000/api/players', {name, year, positionGroup, preferredPositions, playerImg})
+        let dataSet = {name, year, positionGroup, preferredPositions, playerImg }
+        axios.put(`http://localhost:8000/api/players/${props.id}`, dataSet)
             .then((res)=>{
                 console.log(res.data);
-                navigate('/');
+                navigate('/players');
             })
             .catch((err) => {
                 console.log(err);
@@ -48,74 +45,68 @@ const EditPlayerForm = (props) => {
         });
     };
 
-    const HandlePreferredPositions = (positionFromBelow) => {
-        if (preferredPositionOne === '') {
-            setPreferredPositionOne(positionFromBelow);
-        }
-        else if (preferredPositionTwo === '') {
-            setPreferredPositionTwo(positionFromBelow);
-        }
-        else {
-            setPreferredPositionThree(positionFromBelow);
-        }
-    }
+    const yearOptions = [
+        {value: 'freshman', label: 'Freshman'},
+        {value: 'sophomore', label: 'Sophomore'},
+        {value: 'junior', label: 'Junior'},
+        {value: 'senior', label: 'Senior'}
+    ]
 
+    const positionGroupOptions = [
+        {value: 'back', label: 'Back'},
+        {value: 'forward', label: "Forward"}
+    ]
+
+    const backPositionOptions = [
+        {value: 'scrumhalf', label: 'Scrumhalf'},
+        {value: 'flyhalf', label: 'Flyhalf'},
+        {value: 'center', label: 'Center'},
+        {value: 'wing', label: 'Wing'},
+        {value: 'fullback', label: 'Fullback'}
+    ]
+
+    const forwardPositionOptions = [
+        {value: 'prop', label: 'Prop'},
+        {value: 'hooker', label: 'Hooker'},
+        {value: 'second row', label: 'Second Row'},
+        {value: 'flanker', label: 'Flanker'},
+        {value: 'Eight man', label: '8 Man'}
+    ]
     
     return (
         <div className='uk-container'>
             <Navbar/>
-            <h2>Add Player</h2>
-            <form onSubmit={(e) => createPlayerHandler(e)}>
+            <h2>Edit {name}'s Profile</h2>
+            <form onSubmit={(e) => editPlayerHandler(e)}>
                 <div className='uk-margin'>
                     <label>Name:</label>
-                    <input className='uk-input' type='text' name = 'name' onChange={(e) => setName(e.target.value)}/>
+                    <input className='uk-input' type='text' name = 'name' value={name} onChange={(e) => setName(e.target.value)}/>
                 </div>
                     {errors.name ? <span style={{color: "red"}}>{errors.name.message}</span> : null} 
                 <div className='uk-margin'>
                     <label>Year:</label>
-                    <select className='uk-select' onChange={(e) => setYear(e.target.value)}>
-                        <option name = 'year' value = 'freshman'>Freshman</option>
-                        <option name = 'year' value = 'sophomore'>Sophomore</option>
-                        <option name = 'year' value = 'junior'>Junior</option>
-                        <option name = 'year' value = 'senior'>Senior</option>
-                    </select>
+                    <Select options={yearOptions} placeholder="Select a Year" value = {year.label} onChange={setYear} defaultValue={year}/>
                 </div>
                     {errors.year ? <span style={{color: "red"}}>{errors.year.message}</span> : null} 
                 <div className='uk-margin'>
                     <label>Position Group:</label>
-                    <select className='uk-select' onChange={(e) => setPositionGroup(e.target.value)}>
-                        <option name = 'position group' value = 'back'>Back</option>
-                        <option name = 'position group' value = 'forward'>Forward</option>
-                    </select>
+                    <Select options={positionGroupOptions} placeholder="Select a Position Group" onChange={setPositionGroup} defaultValue={positionGroup}/>
                 </div>
                 {errors.positionGroup ? <span style={{color: "red"}}>{errors.positionGroup.message}</span> : null} 
                 <div className='uk-margin'>
                     <label>Preferred Positions:</label>
-                    <select className='uk-select' multiple onChange={(e) => HandlePreferredPositions(e.target.value)}>
-                        {positionGroup === "back"?
-                            <>
-                                <option name = 'preferred position' value = 'flyhalf'>Flyhalf</option>
-                                <option name = 'preferred position' value = 'scrumhalf'>Scrumhalf</option>
-                                <option name = 'preferred position' value = 'center'>Center</option>
-                                <option name = 'preferred position' value = 'wing'>Wing</option>
-                                <option name = 'preferred position' value = 'fullback'>Fullback</option>
-                            </>
+                        {positionGroup.value === 'back'?
+                        <Select options={backPositionOptions} placeholder="Select Applicable Positions" onChange={setPreferredPositions} defaultValue={preferredPositions} isMulti />
                         :
-                        <>
-                            <option name = 'preferred position' value = 'prop'>Prop</option>
-                            <option name = 'preferred position' value = 'hooker'>Hooker</option>
-                            <option name = 'preferred position' value = 'second row'>Second Row</option>
-                            <option name = 'preferred position' value = 'flanker'>Flanker</option>
-                            <option name = 'preferred position' value = 'eight man'>Eight Man</option>
-                        </>
+                        <Select options={forwardPositionOptions} placeholder="Select Applicable Positions" onChange={setPreferredPositions} defaultValue={preferredPositions} isMulti />
                     }
-                    </select>
                 </div>
-                <div className='uk-form-custom'>
+                <div className='uk-form-custom' uk-form-custom="target: true">
                     <label>Player Image:</label>
                     <input type= 'file' onChange={(e) => setPlayerImg(e.target.value)}/>
+                    <input class="uk-input uk-form-width-medium" type="text" placeholder="Select file" disabled/>
                 </div>
-                <button type='submit' >Submit</button>
+                <HoverButton btnVersion="submitPlayer"/>
             </form>
         </div>
     )

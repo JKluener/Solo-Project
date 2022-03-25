@@ -1,4 +1,4 @@
-import {Link, navigate } from "@reach/router";
+import {navigate } from "@reach/router";
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import Navbar from "./chunks/Navbar";
@@ -28,17 +28,19 @@ const Main = (props) => {
                     <th>Location</th>
                     <th>Score</th>
                     <th>Scorers</th>
+                    <th>GameDay Roster</th>
                     </tr>
                 </thead>
                 <tbody>
                         {
                         games?
                         games.map((game)=>(
-                            <tr key={game._id}>
+                            <tr key={game._id}  onClick = {(e)=> navigate(`/schedule/${game._id}`)}>
                                 <td>{game.opponent}</td>
                                 <td>{game.homeBoolean? "Home": "Away"}</td>
                                 <td>{game.score}</td>
                                 <td>{game.scorers}</td>
+                                <td>{game.roster}</td>
                             </tr>
                         ))
                         :null

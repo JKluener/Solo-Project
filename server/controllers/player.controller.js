@@ -1,3 +1,4 @@
+const { redirect } = require('express/lib/response');
 const Player = require('../models/player.model');
 
 module.exports = {
@@ -24,7 +25,7 @@ module.exports = {
     },
 
     getAllPlayers: (req, res)=>{
-        Player.find({}).collation({locale:'en',strength: 2}).sort()
+        Player.find({}).collation({locale:'en',strength: 2}).sort({name: 1})
         .then((allPlayers)=>{
             res.json(allPlayers);
         })
@@ -75,6 +76,18 @@ module.exports = {
             })
             .then((updatedPlayer)=>{
                 res.json(updatedPlayer);
+            })
+            .catch((err)=>{
+                console.log(err);
+                res.status(400).json(err);
+            })
+    },
+
+    getByName: (req, res)=>{
+        Player.find({name: req.params.name})
+            .then((player)=>{
+                res.json(player);
+                res.redirect('/players/:id')
             })
             .catch((err)=>{
                 console.log(err);

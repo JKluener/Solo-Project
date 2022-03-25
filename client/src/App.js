@@ -2,9 +2,12 @@ import { Router } from '@reach/router';
 import './App.css';
 import AddPlayerForm from './components/AddPlayerForm';
 import AllPlayers from './components/AllPlayers';
+import EditGame from './components/EditGame';
 import EditPlayerForm from './components/EditPlayerForm';
 import GameSchedule from './components/GameSchedule';
 import Main from './components/Main';
+import ShowGame from './components/ShowGame';
+import ShowPlayer from './components/ShowPlayer';
 
 function App() {
   return (
@@ -13,8 +16,11 @@ function App() {
         <Main path= "/"/>
         <AllPlayers path = "/players"/>
         <AddPlayerForm path = "/players/add"/>
-        <EditPlayerForm path = "players/add/:id"/>
+        <EditPlayerForm path = "players/edit/:id"/>
         <GameSchedule path = "schedule/edit"/>
+        <ShowPlayer path = "players/:id"/>
+        <ShowGame path = "schedule/:id"/>
+        <EditGame path = "schedule/edit/:id"/>
       </Router>
     </div>
   );
