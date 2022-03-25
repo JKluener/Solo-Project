@@ -14,10 +14,6 @@ const GameSchedule = (props) => {
     const [score, setScore] = useState("");
     const [scorers, setScorers] = useState("");
     const [roster, setRoster] = useState([]);
-    const [hovered, setHovered] = useState(false);
-    const [activeButtonClass, setActiveButtonClass] = useState("");
-    const [btnClassOne, setBtnClassOne] =useState("");
-    const [btnClassTwo, setBtnClassTwo] =useState("");
 
     useEffect(()=>{
         axios.get('http://localhost:8000/api/games')
@@ -25,9 +21,6 @@ const GameSchedule = (props) => {
                 console.log(res);
                 console.log(res.data);
                 setGames(res.data);
-                setActiveButtonClass("uk-button uk-button-primary uk-button-small");
-                setBtnClassOne("uk-button uk-button-primary uk-button-small");
-                setBtnClassTwo("uk-button uk-button-danger uk-button-small");
             })
             axios.get('http://localhost:8000/api/players')
             .then((res)=>{
@@ -57,14 +50,14 @@ const GameSchedule = (props) => {
     const handleRoster = (e) => {
         let tempPlayerNames = [];
         let namesString = e.target.value;
-        tempPlayerNames = namesString.split(',');
+        tempPlayerNames = namesString.split(', ');
         setRoster(tempPlayerNames);
     }
 
     const handleScorers = (e) => {
         let tempPlayerNames = [];
         let namesString = e.target.value;
-        tempPlayerNames = namesString.split(',');
+        tempPlayerNames = namesString.split(', ');
         setScorers(tempPlayerNames);
     }
 
@@ -92,7 +85,6 @@ const GameSchedule = (props) => {
                                 <td>{game.score}</td>
                                 <td>{game.scorers}</td>
                                 <td>{game.roster}</td>
-                                <HoverButton btnversion="navigateEditGame" itemId={game._id} />
                                 <HoverDeleteGame gameid={game._id}/>
                             </tr>
                         ))

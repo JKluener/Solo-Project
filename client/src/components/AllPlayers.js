@@ -6,7 +6,6 @@ import HoverButton from "./chunks/HoverButton";
 
 const AllPlayers = (props) => {
     const [players, setPlayers] = useState([]);
-    const [reloadPage, setReloadPage] = useState(false);
 
     useEffect(()=>{
         axios.get('http://localhost:8000/api/players')
@@ -18,13 +17,7 @@ const AllPlayers = (props) => {
             .catch((err)=>{
                 console.log(err);
             })
-    }, [reloadPage])
-
-
-    const removeFromDom = (playerId) => {
-        setPlayers(players.filter(player => player._id != playerId));
-        setReloadPage(true);
-    }
+    }, [])
 
     return (
         <div className="uk-container">
@@ -56,7 +49,7 @@ const AllPlayers = (props) => {
                                 </td>
                                 <td>
                                     <HoverButton btnversion="navigateEdit" itemId={player._id} />
-                                    <HoverButton btnversion="delete" itemId={player._id}/>
+                                    <HoverButton btnversion="deletePlayer" itemId={player._id}/>
                                 </td>
                             </tr>
                         ))

@@ -2,7 +2,6 @@ import { Router } from '@reach/router';
 import './App.css';
 import AddPlayerForm from './components/AddPlayerForm';
 import AllPlayers from './components/AllPlayers';
-import EditGame from './components/EditGame';
 import EditPlayerForm from './components/EditPlayerForm';
 import GameSchedule from './components/GameSchedule';
 import Main from './components/Main';
@@ -20,7 +19,6 @@ function App() {
         <GameSchedule path = "schedule/edit"/>
         <ShowPlayer path = "players/:id"/>
         <ShowGame path = "schedule/:id"/>
-        <EditGame path = "schedule/edit/:id"/>
       </Router>
     </div>
   );

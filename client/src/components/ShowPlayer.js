@@ -23,30 +23,10 @@ const ShowPlayer = (props) => {
                 setPreferredPositions(res.data.preferredPositions);
                 setPlayerImg(player_fallback);
             })
-            axios.get('http://localhost:8000/api/games')
-            .then((res)=>{
-                console.log(res);
-                console.log(res.data);
-                handleGames(res.data.games);
-                console.log(filterGames);
-            })
             .catch((err)=>{
                 console.log(err);
             })
     }, [])
-
-    const handleGames = (games) => {
-        games.map((game) => {
-            game.roster.map((player) => {
-                if (player.name == {name}) {
-                    let tempGameArray = filterGames;
-                    tempGameArray.push(game);
-                    setFilterGames(tempGameArray);
-                }
-            })
-        })
-    }
-
 
     return (
         <div className="uk-container">
@@ -69,27 +49,6 @@ const ShowPlayer = (props) => {
                     </li>
                 </ul>
             </div>
-            <h2>Games Played:</h2>
-            <table className="uk-table uk-table-hover uk-table-middle">
-                <thead>
-                    <tr>
-                    <th>Opponent</th>
-                    <th>Location</th>
-                    <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                        {
-                            filterGames.map((game)=>(
-                                <tr key={game._id}>
-                                <td>{game.opponent}</td>
-                                <td>{game.homeBoolean? "Home": "Away"}</td>
-                                <td>{game.score}</td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
         </div>
     )
 }
