@@ -101,12 +101,7 @@ const EditPlayerForm = (props) => {
                         <Select options={forwardPositionOptions} placeholder="Select Applicable Positions" onChange={setPreferredPositions} defaultValue={preferredPositions} isMulti />
                     }
                 </div>
-                <div className='uk-form-custom' uk-form-custom="target: true">
-                    <label>Player Image:</label>
-                    <input type= 'file' onChange={(e) => setPlayerImg(e.target.value)}/>
-                    <input class="uk-input uk-form-width-medium" type="text" placeholder="Select file" disabled/>
-                </div>
-                <HoverButton btnVersion="submitPlayer"/>
+                <HoverButton btnversion="submitPlayer"/>
             </form>
         </div>
     )

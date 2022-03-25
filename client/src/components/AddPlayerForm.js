@@ -4,7 +4,6 @@ import { navigate } from '@reach/router';
 import Navbar from './chunks/Navbar';
 import Select from 'react-select';
 import HoverButton from './chunks/HoverButton';
-import { saveAs } from 'file-saver';
 
 
 const AddPlayerForm = (props) => {
